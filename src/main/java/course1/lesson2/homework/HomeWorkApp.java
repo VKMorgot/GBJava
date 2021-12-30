@@ -46,7 +46,7 @@ public class HomeWorkApp {
      *
      * @param a целое число, ноль считаем положительным числом
      */
-    public static void isPositive(int a) {
+    public static void isPositiveOrNegative(int a) {
         if (a >= 0) {
             System.out.printf("Число %d положительное", a);
         } else {
@@ -67,16 +67,36 @@ public class HomeWorkApp {
 
     /**
      * Задание №4
-     * Вывод в консоль строки str n-е число раз
+     * Вывод в консоль строки str n-ое число раз
      *
      * @param str строка для вывода
-     * @param n определяет число выводов строки, не должно быть отрицательным
+     * @param n   определяет число выводов строки, не должно быть отрицательным
      */
     public static void printString(String str, int n) {
         if (n >= 0) {
             for (int i = 0; i < n; i++) {
                 System.out.println(str);
             }
+        }
+    }
+
+    /**
+     * Задание №5*
+     * Определение високосного года
+     *
+     * @param year год, не может быть отрицательным
+     * @return true - если год високосный, false - если не високосный
+     */
+    public static boolean checkYear(int year) {
+        if (year >= 0) {
+            if (year % 400 == 0) {
+                return true;
+            } else if (year % 100 == 0) {
+                return false;
+            } else return year % 4 == 0;
+        } else {
+            System.out.println("Некорректное значение года: " + year);
+            return false;
         }
     }
 
@@ -98,8 +118,8 @@ public class HomeWorkApp {
 
         // вызов метода определения знака числа, вывод работы метода в консоль
         separator();
-        System.out.println("Проверка №1 знака числа");
-        isPositive(getRandomNumber(-100, 100));
+        System.out.println("Проверка знака числа");
+        isPositiveOrNegative(getRandomNumber(-100, 100));
 
         // вызов метода определения знака числа, результат работы метода: boolean
         separator();
@@ -110,7 +130,7 @@ public class HomeWorkApp {
             else
                 return "положительное";
         };
-        System.out.println("Проверка №2 знака числа");
+        System.out.println("Проверка отрицательности числа");
         System.out.printf("Число %d %s", c, printer.print(isNegative(c)));
 
         // второй вызов метода определения знака числа, результат работы метода: boolean
@@ -125,7 +145,18 @@ public class HomeWorkApp {
 
         // вывод строки в консоль
         separator();
+        System.out.println("Вывод строки");
         int n = getRandomNumber(0, 10);
         printString("Выводим строку " + n + " раз", n);
+
+        // определение високосного года
+        separator();
+        System.out.println("Определение високосного года");
+        //int year = 1900;
+        for (int year = 1980; year < 2025; year++) {
+            if (checkYear(year)) {
+                System.out.println("Год " + year + " високосный");
+            } else System.out.println("Год " + year + " не високосный");
+        }
     }
 }
