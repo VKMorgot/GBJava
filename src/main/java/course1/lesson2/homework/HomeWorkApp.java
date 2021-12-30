@@ -2,10 +2,11 @@ package course1.lesson2.homework;
 
 import java.util.Random;
 
-public class HomeWorkApp2 {
+public class HomeWorkApp {
 
     public static void main(String[] args) {
         // вызов метода проверки суммы
+
         //System.out.println(checkSum(getRandomNumber(-5, 20), getRandomNumber(-5, 20)));
 
         int a = getRandomNumber(-5, 20);
@@ -19,11 +20,42 @@ public class HomeWorkApp2 {
         System.out.println("Проверка суммы");
         System.out.printf("Сумма чисел %d и %d%s лежит в интервале от 10 до 20", a, b, str);
 
+        // вызов метода определения знака числа, вывод работы метода в консоль
         separator();
-        System.out.println("Проверка числа");
+        System.out.println("Проверка №1 знака числа");
         isPositive(getRandomNumber(-100, 100));
 
+        // вызов метода определения знака числа, результат работы метода: boolean
+        separator();
+        int c = getRandomNumber(-100, 100);
+        Printable printer = bool -> {
+            if (bool)
+                return "отрицательное";
+            else
+                return "положительное";
+        };
+        System.out.println("Проверка №2 знака числа");
+        System.out.printf("Число %d %s", c, printer.print(isNegative(c)));
 
+        // второй вызов метода определения знака числа, результат работы метода: boolean
+        System.out.println();
+        c = getRandomNumber(-100, 100);
+        if (isNegative(c)) {
+            str = "отрицательное";
+        } else {
+            str = "положительное";
+        }
+        System.out.printf("Число %d %s", c, str);
+    }
+
+    /**
+     * Задание №3
+     * Определение знака числа
+     * @param a целое число, ноль считаем положительным числом
+     * @return true, если число отрицательное; false, если число положительное
+     */
+    public static boolean isNegative (int a) {
+        return (a < 0);
     }
 
     /**
@@ -69,5 +101,9 @@ public class HomeWorkApp2 {
     public static void separator() {
         System.out.println();
         System.out.println();
+    }
+
+    interface Printable {
+        String print(boolean bool);
     }
 }
