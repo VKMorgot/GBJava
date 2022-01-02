@@ -59,6 +59,27 @@ public class HomeWorkApp {
         }
     }
 
+    /**
+     * Задание №3
+     * Задать массив [ 1, 5, 3, 2, 11, 4, 5, 2, 4, 8, 9, 1 ] пройти по нему циклом, и числа меньшие 6 умножить на 2
+     */
+    public static void multiply6() {
+
+        int[] arr = { 1, 5, 3, 2, 11, 4, 5, 2, 4, 8, 9, 1 };
+
+        // Массив до изменений
+        System.out.println(Arrays.toString(arr));
+
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] < 6) {
+                arr[i] *= 2;
+            }
+        }
+
+        // Массив после изменений
+        System.out.println(Arrays.toString(arr));
+    }
+
     public static void main(String[] args) {
 
         System.out.println("Задание №1");
@@ -72,5 +93,9 @@ public class HomeWorkApp {
         from1To100(array100);
         System.out.println(Arrays.toString(array100));
 
+        System.out.println();
+
+        System.out.println("Задание №3");
+        multiply6();
     }
 }
