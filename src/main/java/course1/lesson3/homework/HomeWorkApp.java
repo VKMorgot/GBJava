@@ -47,11 +47,30 @@ public class HomeWorkApp {
         System.out.println(Arrays.toString(arr));
     }
 
+    /**
+     * Задание №2
+     * Задать пустой целочисленный массив длиной 100. С помощью цикла заполнить его значениями 1 2 3 4 5 6 7 8 … 100
+     *
+     * @param arr массив длиной 100
+     */
+    public static void from1To100(int[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = i + 1;
+        }
+    }
+
     public static void main(String[] args) {
 
         System.out.println("Задание №1");
         int[] array01 = new int[10];
         changeZeroAndOne(array01);
+
+        System.out.println();
+
+        System.out.println("Задание №2");
+        int[] array100 = new int[100];
+        from1To100(array100);
+        System.out.println(Arrays.toString(array100));
 
     }
 }
