@@ -29,18 +29,10 @@ public class HomeWorkApp {
             this.minElement = min;
             this.maxElement = max;
         }
-
-        public int getMinElement() {
-            return minElement;
-        }
-
-        public int getMaxElement() {
-            return maxElement;
-        }
     }
 
     /**
-     * Создание массива заданной длины
+     * Создание массива заданной длины и вывод его в консоль
      *
      * @param len размер массива
      * @param min минимальное значение элемента массива
@@ -52,7 +44,25 @@ public class HomeWorkApp {
         for (int i = 0; i < len; i++) {
             arr[i] = getRandomNumber(min, max);
         }
+        System.out.println("Создан массив");
+        System.out.println(Arrays.toString(arr));
         return arr;
+    }
+
+    /**
+     * Подсчет суммы элементов массива на заданном интервале
+     *
+     * @param arr    массив для подсчета суммы
+     * @param start  номер первого элемента интервала
+     * @param finish номер последнего эелемента интервала
+     * @return сумма элементов интервала
+     */
+    public static int calculateSum(int[] arr, int start, int finish) {
+        int sum = 0;
+        for (int i = start; i <= finish; i++) {
+            sum += arr[i];
+        }
+        return sum;
     }
 
     /**
@@ -65,9 +75,6 @@ public class HomeWorkApp {
         // задаем массив из 0 и 1 размером 10
         int[] arr = createArray(10, 0, 2);
 
-        // выводим первоначальный массив в консоль
-        System.out.println(Arrays.toString(arr));
-
         // меняем 0 на 1, 1 на 0
         for (int i = 0; i < arr.length; i++) {
             if (arr[i] == 1) {
@@ -78,6 +85,7 @@ public class HomeWorkApp {
         }
 
         // выводим измененный массив в консоль
+        System.out.println("Измененный массив");
         System.out.println(Arrays.toString(arr));
     }
 
@@ -150,15 +158,13 @@ public class HomeWorkApp {
     }
 
     /**
-     * Задание №6. Первый спобос
+     * Задание №6*. Первый способ. Поиск через сортировку
      * Задать одномерный массив и найти в нем минимальный и максимальный элементы
      *
      * @param arr одномерный массив
      * @return минимальное и максимальное значения массива
      */
     public static MinMaxResult arrayMinMax(int[] arr) {
-        System.out.println("Изначальный массив:");
-        System.out.println(Arrays.toString(arr));
         Arrays.sort(arr);
         System.out.println("Массив после сортировки:");
         System.out.println(Arrays.toString(arr));
@@ -168,15 +174,14 @@ public class HomeWorkApp {
     }
 
     /**
-     * Задание №6. Второй способ
+     * Задание №6*. Второй способ. Поиск через обход массива
      * Задать одномерный массив и найти в нем минимальный и максимальный элементы
      *
      * @param arr одномерный массив
      * @return минимальное и максимальное значения массива
      */
     public static MinMaxResult arrayMinMax2(int[] arr) {
-        System.out.println("Изначальный массив:");
-        System.out.println(Arrays.toString(arr));
+
         int min = arr[0];
         int max = arr[0];
 
@@ -186,6 +191,30 @@ public class HomeWorkApp {
         }
 
         return new MinMaxResult(min, max);
+    }
+
+    /**
+     * Задание №7**
+     * Написать метод, в который передается не пустой одномерный целочисленный массив, метод должен вернуть true,
+     * если в массиве есть место, в котором сумма левой и правой части массива равны.
+     * **Примеры:
+     * checkBalance([2, 2, 2, 1, 2, 2, ||| 10, 1]) → true, т.е. 2 + 2 + 2 + 1 + 2 + 2 = 10 + 1
+     * checkBalance([1, 1, 1, ||| 2, 1]) → true, т.е. 1 + 1 + 1 = 2 + 1
+     * граница показана символами |||, эти символы в массив не входят и не имеют никакого отношения к ИЛИ.
+     *
+     * @param arr не пустой одномерный целочисленный массив
+     * @return результат проверки
+     */
+    public static boolean checkBalance(int[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            if (calculateSum(arr, 0, i) == calculateSum(arr, i + 1, arr.length - 1)) {
+                // для удобства восприятия нумерацию элементов массива начнем с 1
+                System.out.println("Порядковый номер элемента, где левая и правая части массива равны: " + (i + 1));
+                return true;
+            }
+        }
+        System.out.println("В массиве нет места, в котором сумма левой и правой частей массива равны");
+        return false;
     }
 
     public static void main(String[] args) {
@@ -212,16 +241,32 @@ public class HomeWorkApp {
         System.out.println(Arrays.toString(arrayLen(10, 42)));
         System.out.println();
 
-        System.out.println("Задание №6. Первый способ");
+        System.out.println("Задание №6*. Первый способ");
         MinMaxResult result = arrayMinMax(createArray(10, -100, 100));
         System.out.println("Минимальное значение массива: " + result.minElement);
         System.out.println("Максимальное значение массива: " + result.maxElement);
         System.out.println();
 
-        System.out.println("Задание №6. Второй способ");
+        System.out.println("Задание №6*. Второй способ");
         MinMaxResult result2 = arrayMinMax2(createArray(10, -100, 100));
         System.out.println("Минимальное значение массива: " + result2.minElement);
         System.out.println("Максимальное значение массива: " + result2.maxElement);
         System.out.println();
+
+        System.out.println("Задание №7**");
+        int[][] arrays = new int [3][];
+        arrays[0] = createArray(10, 0, 3);
+        arrays[1] = new int[] {2, 2, 2, 1, 2, 2, 10, 1};
+        arrays[2] = new int[] {1, 1, 1, 2, 1};
+//        System.out.println(Arrays.deepToString(arrays));
+
+        for (int[] array : arrays) {
+            System.out.println();
+            System.out.println("Массив для проверки");
+            System.out.println(Arrays.toString(array));
+            checkBalance(array);
+        }
+        System.out.println();
+
     }
 }
