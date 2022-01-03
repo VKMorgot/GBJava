@@ -18,18 +18,52 @@ public class HomeWorkApp {
     }
 
     /**
+     * Класс для вывода результатов по нахождению минимума и максимума массива (Задание №6)
+     */
+    //TODO Детальнее разобраться, как это работает
+    final static class MinMaxResult {
+        private final int minElement;
+        private final int maxElement;
+
+        public MinMaxResult(int min, int max) {
+            this.minElement = min;
+            this.maxElement = max;
+        }
+
+        public int getMinElement() {
+            return minElement;
+        }
+
+        public int getMaxElement() {
+            return maxElement;
+        }
+    }
+
+    /**
+     * Создание массива заданной длины
+     *
+     * @param len размер массива
+     * @param min минимальное значение элемента массива
+     * @param max максимальное значение элемента массива
+     * @return массив
+     */
+    public static int[] createArray(int len, int min, int max) {
+        int[] arr = new int[len];
+        for (int i = 0; i < len; i++) {
+            arr[i] = getRandomNumber(min, max);
+        }
+        return arr;
+    }
+
+    /**
      * Задание №1
      * Задать целочисленный массив, состоящий из элементов 0 и 1. Например: [ 1, 1, 0, 0, 1, 0, 1, 1, 0, 0 ].
      * С помощью цикла и условия заменить 0 на 1, 1 на 0.
-     *
-     * @param arr массив из 0 и 1
      */
-    public static void changeZeroAndOne(int[] arr) {
+    public static void changeZeroAndOne() {
 
-        // задаем массив из 0 и 1
-        for (int i = 0; i < arr.length; i++) {
-            arr[i] = getRandomNumber(0, 2);
-        }
+        // задаем массив из 0 и 1 размером 10
+        int[] arr = createArray(10, 0, 2);
 
         // выводим первоначальный массив в консоль
         System.out.println(Arrays.toString(arr));
@@ -65,7 +99,7 @@ public class HomeWorkApp {
      */
     public static void multiply6() {
 
-        int[] arr = { 1, 5, 3, 2, 11, 4, 5, 2, 4, 8, 9, 1 };
+        int[] arr = {1, 5, 3, 2, 11, 4, 5, 2, 4, 8, 9, 1};
 
         // Массив до изменений
         System.out.println(Arrays.toString(arr));
@@ -105,7 +139,7 @@ public class HomeWorkApp {
      * Написать метод, принимающий на вход два аргумента: len и initialValue,
      * и возвращающий одномерный массив типа int длиной len, каждая ячейка которого равна initialValue.
      *
-     * @param len длина массива
+     * @param len          длина массива
      * @param initialValue значение каждой ячейки массива
      * @return получившийся массив
      */
@@ -115,11 +149,49 @@ public class HomeWorkApp {
         return arr;
     }
 
+    /**
+     * Задание №6. Первый спобос
+     * Задать одномерный массив и найти в нем минимальный и максимальный элементы
+     *
+     * @param arr одномерный массив
+     * @return минимальное и максимальное значения массива
+     */
+    public static MinMaxResult arrayMinMax(int[] arr) {
+        System.out.println("Изначальный массив:");
+        System.out.println(Arrays.toString(arr));
+        Arrays.sort(arr);
+        System.out.println("Массив после сортировки:");
+        System.out.println(Arrays.toString(arr));
+        int min = arr[0];
+        int max = arr[arr.length - 1];
+        return new MinMaxResult(min, max);
+    }
+
+    /**
+     * Задание №6. Второй способ
+     * Задать одномерный массив и найти в нем минимальный и максимальный элементы
+     *
+     * @param arr одномерный массив
+     * @return минимальное и максимальное значения массива
+     */
+    public static MinMaxResult arrayMinMax2(int[] arr) {
+        System.out.println("Изначальный массив:");
+        System.out.println(Arrays.toString(arr));
+        int min = arr[0];
+        int max = arr[0];
+
+        for (int i = 1; i < arr.length; i++) {
+            if (min > arr[i]) min = arr[i];
+            if (max < arr[i]) max = arr[i];
+        }
+
+        return new MinMaxResult(min, max);
+    }
+
     public static void main(String[] args) {
 
         System.out.println("Задание №1");
-        int[] array01 = new int[10];
-        changeZeroAndOne(array01);
+        changeZeroAndOne();
         System.out.println();
 
         System.out.println("Задание №2");
@@ -138,6 +210,18 @@ public class HomeWorkApp {
 
         System.out.println("Задание №5");
         System.out.println(Arrays.toString(arrayLen(10, 42)));
+        System.out.println();
+
+        System.out.println("Задание №6. Первый способ");
+        MinMaxResult result = arrayMinMax(createArray(10, -100, 100));
+        System.out.println("Минимальное значение массива: " + result.minElement);
+        System.out.println("Максимальное значение массива: " + result.maxElement);
+        System.out.println();
+
+        System.out.println("Задание №6. Второй способ");
+        MinMaxResult result2 = arrayMinMax2(createArray(10, -100, 100));
+        System.out.println("Минимальное значение массива: " + result2.minElement);
+        System.out.println("Максимальное значение массива: " + result2.maxElement);
         System.out.println();
     }
 }
