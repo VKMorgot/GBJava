@@ -50,13 +50,13 @@ public class HomeWorkApp {
     /**
      * Задание №2
      * Задать пустой целочисленный массив длиной 100. С помощью цикла заполнить его значениями 1 2 3 4 5 6 7 8 … 100
-     *
-     * @param arr массив длиной 100
      */
-    public static void from1To100(int[] arr) {
+    public static void from1To100() {
+        int[] arr = new int[100];
         for (int i = 0; i < arr.length; i++) {
             arr[i] = i + 1;
         }
+        System.out.println(Arrays.toString(arr));
     }
 
     /**
@@ -80,6 +80,28 @@ public class HomeWorkApp {
         System.out.println(Arrays.toString(arr));
     }
 
+    /**
+     * Задание №4
+     * Создать квадратный двумерный целочисленный массив (количество строк и столбцов одинаковое),
+     * и с помощью цикла(-ов) заполнить его диагональные элементы единицами
+     * (можно только одну из диагоналей, если обе сложно).
+     * Определить элементы одной из диагоналей можно по следующему принципу:
+     * индексы таких элементов равны, то есть [0][0], [1][1], [2][2], …, [n][n];
+     *
+     * @param arr квадратный двумерный целочисленный массив
+     */
+    public static void squareArray(int[][] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j < arr[i].length; j++) {
+                if ((i == j) || (j == arr[i].length - 1 - i)) {
+                    arr[i][j] = 1;
+                }
+                System.out.print(arr[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
     public static void main(String[] args) {
 
         System.out.println("Задание №1");
@@ -89,13 +111,18 @@ public class HomeWorkApp {
         System.out.println();
 
         System.out.println("Задание №2");
-        int[] array100 = new int[100];
-        from1To100(array100);
-        System.out.println(Arrays.toString(array100));
+        from1To100();
 
         System.out.println();
 
         System.out.println("Задание №3");
         multiply6();
+
+        System.out.println();
+
+        System.out.println("Задание №4");
+        int n = 10;
+        int[][] square = new int[n][n];
+        squareArray(square);
     }
 }
