@@ -66,6 +66,25 @@ public class HomeWorkApp {
     }
 
     /**
+     * Сдвиг элементов массива на 1 вправо
+     *
+     * @param arr массив для сдвига
+     */
+    public static void shiftArrayToOne(int[] arr) {
+            int item = arr[arr.length - 1];
+
+            // копирование массива встроенной функцией
+            System.arraycopy(arr, 0, arr, 1, arr.length - 1);
+
+            /* ручное копирование массива
+            for (int i = arr.length - 1; i > 0; i--) {
+                arr[i] = arr[i - 1];
+            } */
+
+            arr[0] = item;
+    }
+
+    /**
      * Задание №1
      * Задать целочисленный массив, состоящий из элементов 0 и 1. Например: [ 1, 1, 0, 0, 1, 0, 1, 1, 0, 0 ].
      * С помощью цикла и условия заменить 0 на 1, 1 на 0.
@@ -217,6 +236,36 @@ public class HomeWorkApp {
         return false;
     }
 
+    /**
+     * Задание №8***
+     * Написать метод, которому на вход подается одномерный массив и число n
+     * (может быть положительным, или отрицательным), при этом метод должен сместить все элементы массива на n позиций.
+     * Элементы смещаются циклично. Для усложнения задачи нельзя пользоваться вспомогательными массивами.
+     * Примеры:
+     * [ 1, 2, 3 ] при n = 1 (на один вправо) -> [ 3, 1, 2 ];
+     * [ 3, 5, 6, 1] при n = -2 (на два влево) -> [ 6, 1, 3, 5 ].
+     * При каком n в какую сторону сдвиг можете выбирать сами.
+     *
+     * @param arr массив для сдвига
+     * @param n   шаг сдвига (положительный - сдвиг вправо, отрицательный - сдвиг влево)
+     */
+    public static void shiftArray(int[] arr, int n) {
+        int shift = n % arr.length;
+
+        if (shift < 0) {
+            shift = arr.length + shift;                         // меняем сдвиг влево на сдвиг вправо
+        }
+
+        if (shift != 0) {                                       // если shift == 0, то сдвиг не нужен
+            for (int i = 0; i < shift; i++) {
+                shiftArrayToOne(arr);                           // сдвигаем вправо на 1
+            }
+        }
+
+        System.out.println("Массив после сдвига на " + n);
+        System.out.println(Arrays.toString(arr));
+    }
+
     public static void main(String[] args) {
 
         System.out.println("Задание №1");
@@ -254,10 +303,10 @@ public class HomeWorkApp {
         System.out.println();
 
         System.out.println("Задание №7**");
-        int[][] arrays = new int [3][];
+        int[][] arrays = new int[3][];
         arrays[0] = createArray(10, 0, 3);
-        arrays[1] = new int[] {2, 2, 2, 1, 2, 2, 10, 1};
-        arrays[2] = new int[] {1, 1, 1, 2, 1};
+        arrays[1] = new int[]{2, 2, 2, 1, 2, 2, 10, 1};
+        arrays[2] = new int[]{1, 1, 1, 2, 1};
 //        System.out.println(Arrays.deepToString(arrays));
 
         for (int[] array : arrays) {
@@ -268,5 +317,7 @@ public class HomeWorkApp {
         }
         System.out.println();
 
+        System.out.println("Задание №8***");
+        shiftArray(createArray(10, 0, 10), getRandomNumber(-20, 20));
     }
 }
