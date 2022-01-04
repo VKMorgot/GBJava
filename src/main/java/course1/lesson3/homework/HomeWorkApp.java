@@ -20,8 +20,7 @@ public class HomeWorkApp {
     /**
      * Класс для вывода результатов по нахождению минимума и максимума массива (Задание №6)
      */
-    //TODO Детальнее разобраться, как это работает
-    final static class MinMaxResult {
+    public static class MinMaxResult {
         private final int minElement;
         private final int maxElement;
 
@@ -71,17 +70,17 @@ public class HomeWorkApp {
      * @param arr массив для сдвига
      */
     public static void shiftArrayToOne(int[] arr) {
-            int item = arr[arr.length - 1];
+        int item = arr[arr.length - 1];
 
-            // копирование массива встроенной функцией
-            System.arraycopy(arr, 0, arr, 1, arr.length - 1);
+        // копирование массива встроенной функцией
+        System.arraycopy(arr, 0, arr, 1, arr.length - 1);
 
             /* ручное копирование массива
             for (int i = arr.length - 1; i > 0; i--) {
                 arr[i] = arr[i - 1];
             } */
 
-            arr[0] = item;
+        arr[0] = item;
     }
 
     /**
@@ -250,7 +249,7 @@ public class HomeWorkApp {
      * @param n   шаг сдвига (положительный - сдвиг вправо, отрицательный - сдвиг влево)
      */
     public static void shiftArray(int[] arr, int n) {
-        int shift = n % arr.length;
+        int shift = n % arr.length;                             // если сдвиг больше длины массива
 
         if (shift < 0) {
             shift = arr.length + shift;                         // меняем сдвиг влево на сдвиг вправо
