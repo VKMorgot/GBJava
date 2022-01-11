@@ -21,7 +21,7 @@ public class ScannerApp {
         System.out.println(c);
         System.out.println(f);
 */
-        //getNumberFromScanner("Введите число от 5 до 10", 5, 10);
+        getNumberFromScanner("Введите число от 5 до 10", 5, 10);
 
         int[][] arr = new int[2][3];
         for (int[] ints : arr) {
@@ -63,5 +63,7 @@ public class ScannerApp {
             }
             System.out.println();
         }
+
+        System.out.println(Arrays.deepToString(arr));
     }
 }
