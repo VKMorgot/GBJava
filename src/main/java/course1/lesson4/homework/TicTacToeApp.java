@@ -1,17 +1,29 @@
 package course1.lesson4.homework;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
 public class TicTacToeApp {
 
+    // игровое поле
+    public static char[][] map;
+
+    // размер поля
     public static int SIZE = 3;
+
+    // необходимо точек для победы
     public static int DOTS_TO_WIN = 3;
+
+    // описание игровых точек
     public static final char DOT_EMPTY = '•';
     public static final char DOT_X = 'X';
     public static final char DOT_O = 'O';
-    public static char[][] map;
+
+    // сканер
     public static Scanner sc = new Scanner(System.in);
+
+    // рандом
     public static Random rnd = new Random();
 
     public static void main(String[] args) {
@@ -21,7 +33,8 @@ public class TicTacToeApp {
         while (true) {
             humanTurn();
             printMap();
-            if (checkWin(DOT_X)) {
+//            if (checkWin(DOT_X)) {
+            if (checkWin2(DOT_X)) {
                 System.out.println("Игрок победил");
                 break;
             }
@@ -32,7 +45,8 @@ public class TicTacToeApp {
 
             aiTurn();
             printMap();
-            if (checkWin(DOT_O)) {
+//            if (checkWin(DOT_O)) {
+            if (checkWin2(DOT_O)) {
                 System.out.println("Компьютер победил");
                 break;
             }
@@ -41,6 +55,7 @@ public class TicTacToeApp {
                 break;
             }
         }
+        System.out.println("Игра окончена");
     }
 
     /**
@@ -48,10 +63,8 @@ public class TicTacToeApp {
      */
     public static void initMap() {
         map = new char[SIZE][SIZE];
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                map[i][j] = DOT_EMPTY;
-            }
+        for (char[] mapItem : map) {
+            Arrays.fill(mapItem, DOT_EMPTY);
         }
     }
 
@@ -82,7 +95,7 @@ public class TicTacToeApp {
      * @return true, если можно установить фишку в заданную ячейку
      */
     public static boolean isCellValid(int x, int y) {
-        if (x < 0 || x >= SIZE && y < 0 || y >= SIZE) return false;
+        if (x < 0 || x >= SIZE || y < 0 || y >= SIZE) return false;
         return map[y][x] == DOT_EMPTY;
     }
 
@@ -113,7 +126,7 @@ public class TicTacToeApp {
     }
 
     /**
-     * Проверка условий победы.
+     * Проверка условий победы. <p>
      * Перебор всех возможных условий для победы на поле 3х3
      *
      * @param dot символ игрока
@@ -131,35 +144,6 @@ public class TicTacToeApp {
     }
 
     /**
-     * Задание №2
-     * Переделать проверку победы, чтобы она не была реализована просто набором условий,
-     * например, с использованием циклов.
-     *
-     * Проверка условий победы с использованием циклов на поле 3х3
-     * @param dot символ игрока
-     * @return true, если игрок победил
-     */
-    public static boolean checkWin2(char dot) {
-        boolean winH, winV;            // winH - победа по горизонтале, winV - победа по вертикале
-        winH = winV = true;
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                if (map[i][j] != dot) {
-                    winH = false;
-                    break;
-                }
-            }
-            for (int j = 0; j < SIZE; j++) {
-                if (map[j][i] != dot) {
-                    winV = false;
-                    break;
-                }
-            }
-        }
-        return winH || winV;
-    }
-
-    /**
      * Проверяем, пустое игровое поле или нет
      *
      * @return true, если поле пустое и нет возможности для хода
@@ -172,4 +156,42 @@ public class TicTacToeApp {
         }
         return true;
     }
+
+    /**
+     * Задание №2
+     * Переделать проверку победы, чтобы она не была реализована просто набором условий,
+     * например, с использованием циклов.
+     * <p>
+     * Проверка условий победы с использованием циклов на поле 3х3
+     *
+     * @param dot символ игрока
+     * @return true, если игрок победил
+     */
+    public static boolean checkWin2(char dot) {
+        boolean winH = false, winV = false;            // winH - победа по горизонтале, winV - победа по вертикале
+        boolean winD = true;                           // winD - победа по диагонале
+        for (int i = 0; i < SIZE; i++) {
+
+            winH = winV = true;
+            for (int j = 0; j < SIZE; j++) {
+                // проверка победы по горизонтале
+                if (map[i][j] != dot) {
+                    winH = false;
+                }
+                // проверка победы по вертикале
+                if (map[j][i] != dot) {
+                    winV = false;
+                }
+            }
+
+            if (winH || winV) break; // победа уже есть
+
+            // проверка победы по диагоналям
+            if (map[i][i] != dot && map[i][SIZE - 1 - i] != dot) {
+                winD = false;
+            }
+        }
+        return (winH || winV || winD);
+    }
+
 }
