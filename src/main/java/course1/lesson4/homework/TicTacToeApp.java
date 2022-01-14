@@ -28,17 +28,18 @@ public class TicTacToeApp {
 
     public static void main(String[] args) {
         System.out.println("Добро пожаловать в игру \"Крестики-Нолики\"");
-        System.out.println("Выберите размер поля: 3х3 или 5х5");
+        System.out.println("Выберите размер поля: 3х3, 4х4 или 5х5");
         do {
-            System.out.println("Введите 3 или 5");
+            System.out.println("Введите 3, 4 или 5");
             SIZE = sc.nextInt();
-        } while (SIZE != 3 && SIZE != 5);
+        } while (SIZE != 3 && SIZE != 5 && SIZE != 4);
 
         switch (SIZE) {
             case 3: {
                 DOTS_TO_WIN = 3;
                 break;
             }
+            case 4:
             case 5: {
                 DOTS_TO_WIN = 4;
                 break;
@@ -51,7 +52,6 @@ public class TicTacToeApp {
             humanTurn();
             printMap();
 //            if (checkWin(DOT_X)) {
-//            if (checkWin2(DOT_X)) {
             if (checkWin3(DOT_X)) {
                 System.out.println("Игрок победил");
                 break;
@@ -64,7 +64,6 @@ public class TicTacToeApp {
             aiTurn();
             printMap();
 //            if (checkWin(DOT_O)) {
-//            if (checkWin2(DOT_O)) {
             if (checkWin3(DOT_O)) {
                 System.out.println("Компьютер победил");
                 break;
@@ -180,68 +179,49 @@ public class TicTacToeApp {
      * Задание №2
      * Переделать проверку победы, чтобы она не была реализована просто набором условий,
      * например, с использованием циклов.
-     * <p>
-     * Проверка условий победы с использованием циклов на поле 3х3
-     *
-     * @param dot символ игрока
-     * @return true, если игрок победил
-     */
-    public static boolean checkWin2(char dot) {
-        boolean winH = false, winV = false;            // winH - победа по горизонтале, winV - победа по вертикале
-        boolean winD = true;                           // winD - победа по диагонале
-        for (int i = 0; i < SIZE; i++) {
-
-            winH = winV = true;
-            for (int j = 0; j < SIZE; j++) {
-                // проверка победы по горизонтале
-                if (map[i][j] != dot) {
-                    winH = false;
-                }
-                // проверка победы по вертикале
-                if (map[j][i] != dot) {
-                    winV = false;
-                }
-            }
-
-            if (winH || winV) break; // достигли победы
-
-            // проверка победы по диагоналям
-            if (map[i][i] != dot && map[i][SIZE - 1 - i] != dot) {
-                winD = false;
-            }
-        }
-        return (winH || winV || winD);
-    }
-
-    /**
-     * Задание №3
+     * <p></p>
+     * Задание №3*
      * Попробовать переписать логику проверки победы, чтобы она работала для поля 5х5 и количества фишек 4.
-     * Очень желательно не делать это просто набором условий для каждой из возможных ситуаций
-     * <p>
-     * Проверка условий победы с использованием циклов на поле 5х5
+     * Очень желательно не делать это просто набором условий для каждой из возможных ситуаций;
+     * <p></p>
+     * Проверка условий победы с использованием циклов.
      *
      * @param dot символ игрока
      * @return true, если игрок победил
      */
     public static boolean checkWin3(char dot) {
-        boolean winD = true;                           // winD - победа по диагонале
+        boolean winD1 = true, winD2 = true;                          // winD - победа по диагоналям
         for (int i = 0; i < SIZE; i++) {
+
             // проверяем горизонтали
-            int h = 0;
-            while (h < SIZE && map[i][h] == dot) {
-                if (h + 1 == DOTS_TO_WIN) return true;
-                h++;
+            int h = 0;                                // порядковый номер в таблице, откуда начинаем считать фишки
+            while (h < SIZE - DOTS_TO_WIN && map[i][h] != dot) h++;
+            int countToWin = 0;                       // счетчик для наступления победы
+            while (countToWin < DOTS_TO_WIN && map[i][h] == dot) {
+                if (countToWin + 1 == DOTS_TO_WIN) return true;
+                else {
+                    countToWin++;
+                    h++;
+                }
             }
+
             // проверяем вертикали
-            int v = 0;
-            while (v < SIZE && map[v][i] == dot) {
-                if (v + 1 == DOTS_TO_WIN) return true;
-                v++;
+            int v = 0;                                // порядковый номер в таблице, откуда начинаем считать фишки
+            while (v < SIZE - DOTS_TO_WIN && map[v][i] != dot) v++;
+            countToWin = 0;                           // счетчик для наступления победы
+            while (countToWin < DOTS_TO_WIN && map[v][i] == dot) {
+                if (countToWin + 1 == DOTS_TO_WIN) return true;
+                else {
+                    countToWin++;
+                    v++;
+                }
             }
-            // проверяем диагонали
-            if (map[i][i] != dot && map[i][SIZE - 1 - i] != dot) winD = false;
+
+            // проверяем диагонали (не работает для поля 5х5)
+            if (map[i][i] != dot) winD1 = false;
+            if (map[i][SIZE - 1 - i] != dot) winD2 = false;
         }
-        return winD;
+        return (winD1 || winD2);
     }
 
 }
