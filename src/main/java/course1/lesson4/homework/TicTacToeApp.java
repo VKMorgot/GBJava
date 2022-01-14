@@ -195,33 +195,38 @@ public class TicTacToeApp {
 
             // проверяем горизонтали
             int h = 0;                                // порядковый номер в таблице, откуда начинаем считать фишки
-            while (h < SIZE - DOTS_TO_WIN && map[i][h] != dot) h++;
-            int countToWin = 0;                       // счетчик для наступления победы
-            while (countToWin < DOTS_TO_WIN && map[i][h] == dot) {
-                if (countToWin + 1 == DOTS_TO_WIN) return true;
-                else {
-                    countToWin++;
-                    h++;
-                }
-            }
+            if (checkWinHV(i, h, dot, true)) return true;
 
             // проверяем вертикали
             int v = 0;                                // порядковый номер в таблице, откуда начинаем считать фишки
-            while (v < SIZE - DOTS_TO_WIN && map[v][i] != dot) v++;
-            countToWin = 0;                           // счетчик для наступления победы
-            while (countToWin < DOTS_TO_WIN && map[v][i] == dot) {
-                if (countToWin + 1 == DOTS_TO_WIN) return true;
-                else {
-                    countToWin++;
-                    v++;
-                }
-            }
+            if (checkWinHV(v, i, dot, false)) return true;
 
             // проверяем диагонали (не работает для поля 5х5)
             if (map[i][i] != dot) winD1 = false;
             if (map[i][SIZE - 1 - i] != dot) winD2 = false;
         }
         return (winD1 || winD2);
+    }
+
+    /**
+     * Проверка победы по вертикале или горизонтале
+     * @param i индекс для обхода поля
+     * @param j индекс для обхода поля
+     * @param dot символ победы
+     * @param hor true, если горизонталь; false - если вертикаль
+     * @return true, если победили
+     */
+    public static boolean checkWinHV(int i, int j, char dot, boolean hor) {
+        while (j < SIZE - DOTS_TO_WIN && map[i][j] != dot) j++;
+        int countToWin = 0;                       // счетчик для наступления победы
+        while (countToWin < DOTS_TO_WIN && map[i][j] == dot) {
+            if (countToWin + 1 == DOTS_TO_WIN) return true;
+            else {
+                countToWin++;
+                if (hor) j++; else i++;
+            }
+        }
+        return false;
     }
 
 }
