@@ -10,10 +10,10 @@ public class TicTacToeApp {
     public static char[][] map;
 
     // размер поля
-    public static int SIZE = 3;
+    public static int SIZE;
 
     // необходимо точек для победы
-    public static int DOTS_TO_WIN = 3;
+    public static int DOTS_TO_WIN;
 
     // описание игровых точек
     public static final char DOT_EMPTY = '•';
@@ -27,14 +27,32 @@ public class TicTacToeApp {
     public static Random rnd = new Random();
 
     public static void main(String[] args) {
-        System.out.println("Добро пожаловать в игру \"Крестики-Нолики 3х3\"");
+        System.out.println("Добро пожаловать в игру \"Крестики-Нолики\"");
+        System.out.println("Выберите размер поля: 3х3 или 5х5");
+        do {
+            System.out.println("Введите 3 или 5");
+            SIZE = sc.nextInt();
+        } while (SIZE != 3 && SIZE != 5);
+
+        switch (SIZE) {
+            case 3: {
+                DOTS_TO_WIN = 3;
+                break;
+            }
+            case 5: {
+                DOTS_TO_WIN = 4;
+                break;
+            }
+        }
+
         initMap();
         printMap();
         while (true) {
             humanTurn();
             printMap();
 //            if (checkWin(DOT_X)) {
-            if (checkWin2(DOT_X)) {
+//            if (checkWin2(DOT_X)) {
+            if (checkWin3(DOT_X)) {
                 System.out.println("Игрок победил");
                 break;
             }
@@ -46,7 +64,8 @@ public class TicTacToeApp {
             aiTurn();
             printMap();
 //            if (checkWin(DOT_O)) {
-            if (checkWin2(DOT_O)) {
+//            if (checkWin2(DOT_O)) {
+            if (checkWin3(DOT_O)) {
                 System.out.println("Компьютер победил");
                 break;
             }
@@ -184,7 +203,7 @@ public class TicTacToeApp {
                 }
             }
 
-            if (winH || winV) break; // победа уже есть
+            if (winH || winV) break; // достигли победы
 
             // проверка победы по диагоналям
             if (map[i][i] != dot && map[i][SIZE - 1 - i] != dot) {
@@ -192,6 +211,37 @@ public class TicTacToeApp {
             }
         }
         return (winH || winV || winD);
+    }
+
+    /**
+     * Задание №3
+     * Попробовать переписать логику проверки победы, чтобы она работала для поля 5х5 и количества фишек 4.
+     * Очень желательно не делать это просто набором условий для каждой из возможных ситуаций
+     * <p>
+     * Проверка условий победы с использованием циклов на поле 5х5
+     *
+     * @param dot символ игрока
+     * @return true, если игрок победил
+     */
+    public static boolean checkWin3(char dot) {
+        boolean winD = true;                           // winD - победа по диагонале
+        for (int i = 0; i < SIZE; i++) {
+            // проверяем горизонтали
+            int h = 0;
+            while (h < SIZE && map[i][h] == dot) {
+                if (h + 1 == DOTS_TO_WIN) return true;
+                h++;
+            }
+            // проверяем вертикали
+            int v = 0;
+            while (v < SIZE && map[v][i] == dot) {
+                if (v + 1 == DOTS_TO_WIN) return true;
+                v++;
+            }
+            // проверяем диагонали
+            if (map[i][i] != dot && map[i][SIZE - 1 - i] != dot) winD = false;
+        }
+        return winD;
     }
 
 }
