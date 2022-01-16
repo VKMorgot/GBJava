@@ -136,7 +136,7 @@ public class TicTacToeApp {
         do {
             x = rnd.nextInt(SIZE);
             y = rnd.nextInt(SIZE);
-        } while (!isCellValid(x, y));
+        } while (!(isCellValid(x, y) && isOpponentNear(x, y)));
         System.out.println("Ход компьютера в точку " + (x + 1) + " " + (y + 1));
         map[y][x] = DOT_O;
     }
@@ -203,7 +203,10 @@ public class TicTacToeApp {
             if (j > SIZE - DOTS_TO_WIN) return false;
         } else if (i > SIZE - DOTS_TO_WIN) return false;
 
+        // просматриваем горизонталь/вертикаль пока не встретим победную фишку
         while (j < SIZE - DOTS_TO_WIN && map[i][j] != dot) j++;
+        while (i < SIZE - DOTS_TO_WIN && map[i][j] != dot) i++;
+
         int countToWin = 0;                       // счетчик для наступления победы
         while (countToWin < DOTS_TO_WIN && map[i][j] == dot) {
             if (countToWin + 1 == DOTS_TO_WIN) return true;
@@ -242,6 +245,28 @@ public class TicTacToeApp {
                 i++;
                 if (leftToRight) j++;
                 else j--;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Задание №4***
+     * Доработать искусственный интеллект, чтобы он мог блокировать ходы игрока.
+     * <p>
+     * Компьютер делает свой ход рядом с фишкой игрока. В некоторых ситуациях это может усложнить игру.
+     *
+     * @param x координата ячейки x
+     * @param y координата ячейки y
+     * @return true, если рядом есть фишка соперника
+     */
+    public static boolean isOpponentNear(int x, int y) {
+        for (int i = x - 1; i <= x + 1; i++) {
+            for (int j = y - 1; j <= y + 1; j++) {
+                try {
+                    if (map[j][i] == DOT_X) return true;
+                } catch (ArrayIndexOutOfBoundsException ignored) {
+                }
             }
         }
         return false;
