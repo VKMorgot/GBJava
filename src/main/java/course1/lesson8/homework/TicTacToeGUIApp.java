@@ -6,11 +6,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Random;
-import java.util.Scanner;
 
-
+/**
+ * Кнопка на панели интерфейса
+ */
 class ButtonGrid extends JButton {
 
+    // координаты кнопки на панели интерфейса
     private final int[] dot = new int[2];
 
     ButtonGrid(int x, int y) {
@@ -28,9 +30,15 @@ class ButtonGrid extends JButton {
 
 }
 
+/**
+ * Графический интерфейс программы
+ */
 class Gui extends JFrame {
 
+    // кнопки игрового поля
     ButtonGrid[][] buttons;
+
+    // для удобства записи координат x и y
     final int X = 0;
     final int Y = 1;
 
@@ -40,11 +48,17 @@ class Gui extends JFrame {
         setTitle(TicTacToeGUIApp.TITLE);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setBounds(300, 300, 400, 400);
+        setResizable(false);
+        setLocationRelativeTo(null);
 
         setLayout(new GridLayout(size, size));
         buttons = new ButtonGrid[size][size];
+
+        // массив, иначе не работает внутри ActionListener
+        // флаг о завершении игры
         final boolean[] isGameOver = {false};
 
+        // создаем кнопки и на каждую кнопку вешаем ActionListener
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 buttons[i][j] = new ButtonGrid(i, j);
@@ -56,6 +70,7 @@ class Gui extends JFrame {
                 buttons[i][j].addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
+                        // выполняем, если игра не закончена и ход человека валидный
                         if (!isGameOver[0] && TicTacToeGUIApp.humanTurnGUI(buttons[finalI][finalJ].getDotX(), buttons[finalI][finalJ].getDotY())) {
                             buttons[finalI][finalJ].setBackground(Color.green);
 
@@ -115,9 +130,6 @@ public class TicTacToeGUIApp {
     public static final char DOT_EMPTY = '•';
     public static final char DOT_X = 'X';
     public static final char DOT_O = 'O';
-
-    // сканер
-    public static Scanner sc = new Scanner(System.in);
 
     // рандом
     public static Random rnd = new Random();
@@ -219,8 +231,7 @@ public class TicTacToeGUIApp {
         } while (!(isCellValid(x, y) && isOpponentNear(x, y)));
         System.out.println("Ход компьютера в точку " + (x + 1) + " " + (y + 1));
         map[y][x] = DOT_O;
-        int[] dot = {x, y};
-        return dot;
+        return new int[]{x, y};
     }
 
     /**
@@ -238,15 +249,6 @@ public class TicTacToeGUIApp {
     }
 
     /**
-     * Задание №2
-     * Переделать проверку победы, чтобы она не была реализована просто набором условий,
-     * например, с использованием циклов.
-     * <p>
-     * </p>
-     * Задание №3*
-     * Попробовать переписать логику проверки победы, чтобы она работала для поля 5х5 и количества фишек 4.
-     * Очень желательно не делать это просто набором условий для каждой из возможных ситуаций;
-     * <p></p>
      * Проверка условий победы с использованием циклов.
      *
      * @param dot символ игрока
@@ -333,9 +335,6 @@ public class TicTacToeGUIApp {
     }
 
     /**
-     * Задание №4***
-     * Доработать искусственный интеллект, чтобы он мог блокировать ходы игрока.
-     * <p>
      * Компьютер делает свой ход рядом с фишкой игрока. В некоторых ситуациях это может усложнить игру.
      *
      * @param x координата ячейки x

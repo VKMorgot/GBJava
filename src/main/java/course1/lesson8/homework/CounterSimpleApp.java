@@ -37,8 +37,8 @@ class Button extends JButton {
 public class CounterSimpleApp extends JFrame {
 
     static int value;
-    private static Color warningColor = null;
-    private static Color neutralColor = null;
+    private static Color warningColor;
+    private static Color neutralColor;
 
     static void validateRange(JPanel panel) {
         if (Math.abs(value) > 10) {
@@ -59,6 +59,8 @@ public class CounterSimpleApp extends JFrame {
         Font font = new Font("Arial", Font.BOLD, 32);
 
         // центральная панель
+        // на центральной панели будут находиться значения счетчика и две кнопки по его одиночному уменьшению/увеличению
+        // кнопки множественного увеличения будут лежать на основном фрейме
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         add(panel, BorderLayout.CENTER);
