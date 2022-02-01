@@ -31,15 +31,19 @@ class ButtonGrid extends JButton {
 class Gui extends JFrame {
 
     ButtonGrid[][] buttons;
+    final int X = 0;
+    final int Y = 1;
+
 
     Gui(int size) {
 
-        setTitle("Крестики-нолики");
+        setTitle(TicTacToeGUIApp.TITLE);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setBounds(300, 300, 400, 400);
 
         setLayout(new GridLayout(size, size));
         buttons = new ButtonGrid[size][size];
+        final boolean[] isGameOver = {false};
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
@@ -48,11 +52,43 @@ class Gui extends JFrame {
 
                 int finalI = i;
                 int finalJ = j;
+
                 buttons[i][j].addActionListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        if (TicTacToeGUIApp.humanTurnGUI(buttons[finalI][finalJ].getDotX(), buttons[finalI][finalJ].getDotY())) {
+                        if (!isGameOver[0] && TicTacToeGUIApp.humanTurnGUI(buttons[finalI][finalJ].getDotX(), buttons[finalI][finalJ].getDotY())) {
                             buttons[finalI][finalJ].setBackground(Color.green);
+
+                            TicTacToeGUIApp.printMap();
+                            if (TicTacToeGUIApp.checkWin(TicTacToeGUIApp.DOT_X)) {
+                                System.out.println("Игрок победил");
+                                isGameOver[0] = true;
+                                JOptionPane.showMessageDialog(null, "Игрок победил", TicTacToeGUIApp.TITLE, JOptionPane.INFORMATION_MESSAGE);
+                                System.exit(0);
+                            }
+
+                            if (TicTacToeGUIApp.isMapFull()) {
+                                System.out.println("Ничья");
+                                isGameOver[0] = true;
+                                JOptionPane.showMessageDialog(null, "Ничья", TicTacToeGUIApp.TITLE, JOptionPane.INFORMATION_MESSAGE);
+                                System.exit(0);
+                            }
+
+                            int[] dot = TicTacToeGUIApp.aiTurn();
+                            buttons[dot[Y]][dot[X]].setBackground(Color.red);
+                            TicTacToeGUIApp.printMap();
+                            if (TicTacToeGUIApp.checkWin(TicTacToeGUIApp.DOT_O)) {
+                                System.out.println("Компьютер победил");
+                                isGameOver[0] = true;
+                                JOptionPane.showMessageDialog(null, "Компьютер победил", TicTacToeGUIApp.TITLE, JOptionPane.INFORMATION_MESSAGE);
+                                System.exit(0);
+                            }
+                            if (TicTacToeGUIApp.isMapFull()) {
+                                System.out.println("Ничья");
+                                isGameOver[0] = true;
+                                JOptionPane.showMessageDialog(null, "Ничья", TicTacToeGUIApp.TITLE, JOptionPane.INFORMATION_MESSAGE);
+                                System.exit(0);
+                            }
                         }
                     }
                 });
@@ -86,62 +122,36 @@ public class TicTacToeGUIApp {
     // рандом
     public static Random rnd = new Random();
 
-    public static void main(String[] args) {
-        System.out.println("Добро пожаловать в игру \"Крестики-Нолики\"");
-        System.out.println("Выберите размер поля: 3х3, 4х4 или 5х5");
-        do {
-            System.out.println("Введите 3, 4 или 5");
-            SIZE = sc.nextInt();
-        } while (SIZE != 3 && SIZE != 5 && SIZE != 4);
+    // заголовок
+    static final String TITLE = "Крестики-нолики";
 
-        switch (SIZE) {
-            case 3: {
+    public static void main(String[] args) {
+
+        String message = "Добро пожаловать в игру \"Крестики-Нолики\"";
+        System.out.println(message);
+
+        String[] strSize = {"3х3", "4х4", "5х5"};
+        String inputSize = (String) JOptionPane.showInputDialog(null, message + "\nВыберите размер поля", TITLE, JOptionPane.PLAIN_MESSAGE, null, strSize, strSize[0]);
+
+        if (inputSize != null) {
+            if (inputSize.equals(strSize[0])) {
+                SIZE = 3;
                 DOTS_TO_WIN = 3;
-                break;
             }
-            case 4:
-            case 5: {
+            if (inputSize.equals(strSize[1])) {
+                SIZE = 4;
                 DOTS_TO_WIN = 4;
-                break;
             }
-        }
+            if (inputSize.equals(strSize[2])) {
+                SIZE = 5;
+                DOTS_TO_WIN = 4;
+            }
+        } else System.exit(0);
 
         initMap();
         printMap();
 
-        Gui gui = new Gui(SIZE);
-
-            while (true) {
-                isHumanTurn = true;
-                while (isHumanTurn) {
-                }
-
-                printMap();
-                if (checkWin(DOT_X)) {
-                    System.out.println("Игрок победил");
-                    break;
-                }
-                if (isMapFull()) {
-                    System.out.println("Ничья");
-                    break;
-                }
-
-                // Здесь нужно поставить breakpoint, чтобы программа работала в режиме дебага
-                System.out.println("Breakpoint is needed");
-
-                aiTurn(gui);
-                printMap();
-                if (checkWin(DOT_O)) {
-                    System.out.println("Компьютер победил");
-                    break;
-                }
-                if (isMapFull()) {
-                    System.out.println("Ничья");
-                    break;
-                }
-            }
-
-        System.out.println("Игра окончена");
+        new Gui(SIZE);
     }
 
     /**
@@ -187,9 +197,6 @@ public class TicTacToeGUIApp {
 
     /**
      * Ход человека через интерфейс
-     *
-     * @param x
-     * @param y
      */
     public static boolean humanTurnGUI(int x, int y) {
         if (isCellValid(y, x)) {
@@ -204,15 +211,16 @@ public class TicTacToeGUIApp {
     /**
      * Ход компьютера
      */
-    public static void aiTurn(Gui gui) {
-            int x, y;
-            do {
-                x = rnd.nextInt(SIZE);
-                y = rnd.nextInt(SIZE);
-            } while (!(isCellValid(x, y) && isOpponentNear(x, y)));
-            System.out.println("Ход компьютера в точку " + (x + 1) + " " + (y + 1));
-            map[y][x] = DOT_O;
-            gui.buttons[y][x].setBackground(Color.red);
+    public static int[] aiTurn() {
+        int x, y;
+        do {
+            x = rnd.nextInt(SIZE);
+            y = rnd.nextInt(SIZE);
+        } while (!(isCellValid(x, y) && isOpponentNear(x, y)));
+        System.out.println("Ход компьютера в точку " + (x + 1) + " " + (y + 1));
+        map[y][x] = DOT_O;
+        int[] dot = {x, y};
+        return dot;
     }
 
     /**
