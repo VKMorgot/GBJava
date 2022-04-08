@@ -7,10 +7,12 @@ import java.awt.*;
 public class GameCanvas extends JPanel {
     private long lastFrameTime;
     private final MainCircles controller;
+    private final Background back;
 
     GameCanvas(MainCircles controller) {
         lastFrameTime = System.nanoTime();
         this.controller = controller;
+        back = new Background(this);
     }
 
     @Override
@@ -43,5 +45,9 @@ public class GameCanvas extends JPanel {
 
     public int getBottom() {
         return getHeight() - 1;
+    }
+
+    public Background getBack() {
+        return back;
     }
 }

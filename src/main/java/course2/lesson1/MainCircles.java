@@ -2,6 +2,7 @@ package course2.lesson1;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Random;
 
 public class MainCircles extends JFrame {
     private static final int POS_X = 400;
@@ -23,9 +24,14 @@ public class MainCircles extends JFrame {
         }
     }
 
+    private void changeBackground(GameCanvas canvas) {
+        canvas.getBack().changeColor();
+    }
+
     void onDrawCanvas(GameCanvas c, Graphics g, float deltaTime) {
         update(c, deltaTime);
         render(c, g);
+        changeBackground(c);
     }
 
     private void initApplication() {
