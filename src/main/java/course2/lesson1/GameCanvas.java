@@ -2,15 +2,20 @@ package course2.lesson1;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 // холст для рисования
 public class GameCanvas extends JPanel {
     private long lastFrameTime;
     private final MainCircles controller;
+    private final Background back;
 
     GameCanvas(MainCircles controller) {
         lastFrameTime = System.nanoTime();
         this.controller = controller;
+        back = new Background(this);
+        addMouseListener(createMouseListener());
     }
 
     @Override
@@ -29,6 +34,36 @@ public class GameCanvas extends JPanel {
         repaint(); // } while (true);
     }
 
+    private MouseListener createMouseListener() {
+        return new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    controller.addSprite();
+                }
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    controller.removeSprite();
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        };
+    }
+
     public int getLeft() {
         return 0;
     }
@@ -43,5 +78,9 @@ public class GameCanvas extends JPanel {
 
     public int getBottom() {
         return getHeight() - 1;
+    }
+
+    public Background getBack() {
+        return back;
     }
 }

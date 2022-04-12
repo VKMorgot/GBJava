@@ -9,7 +9,7 @@ public class MainCircles extends JFrame {
     private static final int WINDOW_WIDTH = 800;
     private static final int WINDOW_HEIGHT = 600;
 
-    private final Ball[] sprites = new Ball[10];
+    private Ball[] sprites = new Ball[10];
 
     private void update(GameCanvas canvas, float deltaTime) {
         for (Ball sprite : sprites) {
@@ -23,9 +23,29 @@ public class MainCircles extends JFrame {
         }
     }
 
+    private void changeBackground(GameCanvas canvas) {
+        canvas.getBack().changeColor();
+    }
+
+    void addSprite() {
+        Ball[] newSprites = new Ball[sprites.length + 1];
+        System.arraycopy(sprites, 0, newSprites, 0, sprites.length);
+        newSprites[newSprites.length - 1] = new Ball();
+        sprites = newSprites;
+    }
+
+    void removeSprite() {
+        if (sprites.length - 1 >= 0) {
+            Ball[] newSprites = new Ball[sprites.length - 1];
+            System.arraycopy(sprites, 0, newSprites, 0, sprites.length - 1);
+            sprites = newSprites;
+        }
+    }
+
     void onDrawCanvas(GameCanvas c, Graphics g, float deltaTime) {
         update(c, deltaTime);
         render(c, g);
+        changeBackground(c);
     }
 
     private void initApplication() {
