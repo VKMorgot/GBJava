@@ -1,4 +1,4 @@
-package course2.lesson1;
+package course2.lesson1.homework;
 
 import java.awt.*;
 
