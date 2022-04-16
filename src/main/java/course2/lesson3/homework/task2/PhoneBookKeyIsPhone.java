@@ -27,11 +27,11 @@ public class PhoneBookKeyIsPhone implements PhoneBookInt {
      */
     public ArrayList<String> get(String lastName) {
         ArrayList<String> numList = new ArrayList<>();
-        for (String keyNumber : phoneBook.keySet()) {
-            if (phoneBook.get(keyNumber).equals(lastName)) {
-                numList.add(keyNumber);
-            }
-        }
+
+        phoneBook.forEach((key, value) -> {
+            if (value.equals(lastName)) numList.add(key);
+        });
+
         if (numList.size() == 0) numList.add("номер телефона не найден");
         return numList;
     }
