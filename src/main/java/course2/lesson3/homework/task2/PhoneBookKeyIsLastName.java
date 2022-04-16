@@ -12,8 +12,25 @@ public class PhoneBookKeyIsLastName implements PhoneBookInt {
     // телефонный справочник
     private final HashMap<String, HashSet<String>> phoneBook = new HashMap<>();
 
+//    /**
+//     * Добавляем запись в телефонный справочник
+//     * без использования merge
+//     * @param lastName фамилия
+//     * @param phoneNumber телефон
+//     */
+//    public void add(String lastName, String phoneNumber) {
+//        if (phoneBook.containsKey(lastName)) {
+//            phoneBook.get(lastName).add(phoneNumber);
+//        } else {
+//            HashSet<String> newNumber = new HashSet<>();
+//            newNumber.add(phoneNumber);
+//            phoneBook.put(lastName, newNumber);
+//        }
+//    }
+
     /**
      * Добавляем запись в телефонный справочник
+     * с использованием merge
      * @param lastName фамилия
      * @param phoneNumber телефон
      */
@@ -26,6 +43,7 @@ public class PhoneBookKeyIsLastName implements PhoneBookInt {
 
     /**
      * Ищем номер телефона по фамилии
+     *
      * @param lastName фамилия
      * @return список номеров телефона, относящихся к фамилии
      */
