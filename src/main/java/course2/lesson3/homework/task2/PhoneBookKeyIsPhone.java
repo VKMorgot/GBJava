@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * Телефонный справочни, с ключом по номеру телефона
+ * Телефонный справочник с ключом по номеру телефона
  */
 public class PhoneBookKeyIsPhone implements PhoneBookInt {
 
