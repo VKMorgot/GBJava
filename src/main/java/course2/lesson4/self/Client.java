@@ -1,4 +1,4 @@
-package course2.lesson4;
+package course2.lesson4.self;
 
 import javax.swing.*;
 import java.awt.*;
@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
 
 public class Client extends JFrame implements ActionListener, Thread.UncaughtExceptionHandler {
 
