@@ -6,7 +6,14 @@
 
     <groupId>groupId</groupId>
     <artifactId>GBJava</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>chat-client</module>
+        <module>chat-server</module>
+        <module>chat-common</module>
+        <module>network</module>
+    </modules>
 
     <properties>
         <maven.compiler.source>1.11</maven.compiler.source>
