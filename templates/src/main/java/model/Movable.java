@@ -1,4 +1,4 @@
-package templates.model;
+package model;
 
 public interface Movable {
     ColoredPoint move(ColoredPoint point, int dx, int dy);

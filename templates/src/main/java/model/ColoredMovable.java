@@ -1,13 +1,13 @@
-package templates.model;
+package model;
 
-public class DefaultMovable implements Movable {
+public class ColoredMovable implements Movable {
 
     @Override
     public ColoredPoint move(ColoredPoint point, int dx, int dy) {
         return ColoredPoint.builder()
                 .setX(point.getX() + dx)
                 .setY(point.getY() + dy)
-                .setColor(point.getColor())
+                .setColor("strong red")
                 .build();
     }
 

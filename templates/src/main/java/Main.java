@@ -1,6 +1,7 @@
-package templates;
-
-import templates.model.*;
+import model.ColoredPoint;
+import model.Movable;
+import model.Point;
+import model.PointFactory;
 
 public class Main {
 

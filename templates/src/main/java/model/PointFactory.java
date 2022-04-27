@@ -1,4 +1,4 @@
-package templates.model;
+package model;
 
 public class PointFactory {
 

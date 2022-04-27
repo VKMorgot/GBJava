@@ -13,6 +13,7 @@
         <module>chat-server</module>
         <module>chat-common</module>
         <module>network</module>
+        <module>templates</module>
     </modules>
 
     <properties>

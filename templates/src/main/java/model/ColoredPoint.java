@@ -1,4 +1,4 @@
-package templates.model;
+package model;
 
 public class ColoredPoint {
     private final int x;
