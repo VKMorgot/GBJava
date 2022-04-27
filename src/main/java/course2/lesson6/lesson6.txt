@@ -1,0 +1,8 @@
+Чат разделили на несколько отдельных модулей:
+
+D:\Java\GBJava\chat-client: chat-client/src/main/java/chat/client
+D:\Java\GBJava\chat-common: chat-common/src/main/java/chat/common
+D:\Java\GBJava\chat-server: chat-server/src/main/java/chat/server
+D:\Java\GBJava\network: network/src/main/java/network
+
+В dependencies.uml указаны текущие зависимости
