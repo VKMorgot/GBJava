@@ -15,13 +15,19 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
 
     private final int SERVER_SOCKET_TIMEOUT = 2000;
     private final DateFormat DATA_FORMAT = new SimpleDateFormat("HH:mm:ss ");
+    private Vector<SocketThread> clients = new Vector<>();
+
     int counter = 0;
     ServerSocketThread server;
-    Vector<SocketThread> socketThreadVector = new Vector<>();
+    ChatServerListener listener;
+
+    public ChatServer(ChatServerListener listener) {
+        this.listener = listener;
+    }
 
     public void start(int port) {
         if (server != null && server.isAlive()) {
-            System.out.println("Server already started");
+            putLog("Server already started");
         } else {
             server = new ServerSocketThread(this, "Chat server " + counter++, port, SERVER_SOCKET_TIMEOUT);
         }
@@ -29,11 +35,10 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
 
     public void stop() {
         if (server == null || !server.isAlive()) {
-            System.out.println("Server is not running");
+            putLog("Server is not running");
         } else {
             server.interrupt();
         }
-
     }
 
     /**
@@ -45,7 +50,7 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
         msg = DATA_FORMAT.format(System.currentTimeMillis()) +
                 Thread.currentThread().getName() +
                 ": " + msg;
-        System.out.println(msg);
+        listener.onChatServerMessage(msg);
     }
 
     /**
@@ -59,7 +64,6 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
 
     @Override
     public void onServerStop(ServerSocketThread thread) {
-        socketThreadVector.clear();
         putLog("Server thread stopped");
     }
 
@@ -75,11 +79,10 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
 
     @Override
     public void onSocketAccepted(ServerSocketThread t, ServerSocket s, Socket client) {
-        // здесь будет какая-то наша реакция на соединение
+        // реакция на соединение
         putLog("Client connected");
         String name = "SocketThread" + client.getInetAddress() + ": " + client.getPort();
-//        new SocketThread(this, name, client);
-        socketThreadVector.add(new SocketThread(this, name, client));
+        new SocketThread(this, name, client);
     }
 
     @Override
@@ -99,17 +102,19 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
     @Override
     public void onSocketStop(SocketThread t) {
         putLog("Client disconnected");
+        clients.remove(t);
     }
 
     @Override
     public void onSocketReady(SocketThread t, Socket socket) {
         putLog("Client is ready");
+        clients.add(t);
     }
 
     @Override
     public void onReceiveString(SocketThread t, Socket s, String msg) {
 //        t.sendMessage("echo: " + msg);
-        for (SocketThread socketThread : socketThreadVector) {
+        for (SocketThread socketThread : clients) {
             socketThread.sendMessage(msg);
         }
     }

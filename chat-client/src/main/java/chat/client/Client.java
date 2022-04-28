@@ -13,7 +13,7 @@ import java.net.Socket;
 
 public class Client extends JFrame implements ActionListener, Thread.UncaughtExceptionHandler, SocketThreadListener {
 
-    private static final int WIDTH = 400;
+    private static final int WIDTH = 600;
     private static final int HEIGHT = 300;
 
     private boolean shownIOErrors = false;                                          // для контроля возникновения ошибок
@@ -79,7 +79,6 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
         add(spUsers, BorderLayout.EAST);
 
 
-        panelTop.setVisible(true);
         panelBottom.setVisible(false);
         setVisible(true);
     }
@@ -103,19 +102,9 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
         } else if (scr == btnLogin) {
             connect();
         } else if (scr == btnDisconnect) {
-            disconnect();
+            socketThread.close();
         } else {
             throw new RuntimeException("Action for component unimplemented");
-        }
-    }
-
-    private void disconnect() {
-        try {
-            socketThread.close();
-            panelTop.setVisible(true);
-            panelBottom.setVisible(false);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
         }
     }
 
@@ -123,8 +112,6 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
         try {
             Socket socket = new Socket(tfIPAddress.getText(), Integer.parseInt(tfPort.getText()));
             socketThread = new SocketThread(this, "Client", socket);
-            panelTop.setVisible(false);
-            panelBottom.setVisible(true);
         } catch (IOException e) {
             showException(Thread.currentThread(), e);
         }
@@ -191,12 +178,14 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
 
     @Override
     public void onSocketStop(SocketThread t) {
-        putLog("Stop");
+        panelBottom.setVisible(false);
+        panelTop.setVisible(true);
     }
 
     @Override
     public void onSocketReady(SocketThread t, Socket socket) {
-        putLog("Ready");
+        panelBottom.setVisible(true);
+        panelTop.setVisible(false);
     }
 
     @Override

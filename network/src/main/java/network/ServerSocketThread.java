@@ -6,7 +6,8 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 
 /**
- * Поток сервера
+ * Класс занимается созданием сокетов: ожидает подключения, блокирует порт,
+ * блокирует поток программы, дожидается подключения и создает сокет
  */
 public class ServerSocketThread extends Thread {
     private int port;
@@ -42,7 +43,5 @@ public class ServerSocketThread extends Thread {
         } finally {
             listener.onServerStop(this);
         }
-
-        System.out.println("Server stopped");
     }
 }

@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 /**
- * Поток клиента или сервера
+ * Класс отвечает за соединение и обмен сообщениями
  */
 public class SocketThread extends Thread{
     private final SocketThreadListener listener;
