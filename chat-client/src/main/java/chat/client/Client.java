@@ -137,7 +137,7 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
             return;
         }
         tfMessage.setText(null);
-        socketThread.sendMessage(msg);
+        socketThread.sendMessage(userName + ": " + msg);
 //        putLog(String.format("%s: %s", userName, msg));
 //        wrtMsgToLogFile(msg, userName);
 
