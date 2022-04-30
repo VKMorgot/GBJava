@@ -9,6 +9,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Vector;
 
 public class ChatServer implements ServerSocketThreadListener, SocketThreadListener {
 
@@ -16,6 +17,7 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
     private final DateFormat DATA_FORMAT = new SimpleDateFormat("HH:mm:ss ");
     int counter = 0;
     ServerSocketThread server;
+    Vector<SocketThread> socketThreadVector = new Vector<>();
 
     public void start(int port) {
         if (server != null && server.isAlive()) {
@@ -57,6 +59,7 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
 
     @Override
     public void onServerStop(ServerSocketThread thread) {
+        socketThreadVector.clear();
         putLog("Server thread stopped");
     }
 
@@ -75,7 +78,8 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
         // здесь будет какая-то наша реакция на соединение
         putLog("Client connected");
         String name = "SocketThread" + client.getInetAddress() + ": " + client.getPort();
-        new SocketThread(this, name, client);
+//        new SocketThread(this, name, client);
+        socketThreadVector.add(new SocketThread(this, name, client));
     }
 
     @Override
@@ -83,6 +87,9 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
         e.printStackTrace();
     }
 
+    /**
+     * Socket thread methods
+     */
 
     @Override
     public void onSocketStart(SocketThread t, Socket s) {
@@ -101,7 +108,10 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
 
     @Override
     public void onReceiveString(SocketThread t, Socket s, String msg) {
-        t.sendMessage("echo: " + msg);
+//        t.sendMessage("echo: " + msg);
+        for (SocketThread socketThread : socketThreadVector) {
+            socketThread.sendMessage(msg);
+        }
     }
 
     @Override

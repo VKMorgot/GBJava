@@ -61,6 +61,7 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
         btnSend.addActionListener(this);
         tfMessage.addActionListener(this);
         btnLogin.addActionListener(this);
+        btnDisconnect.addActionListener(this);
 
         panelTop.add(tfIPAddress);
         panelTop.add(tfPort);
@@ -77,6 +78,9 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
         add(spLog, BorderLayout.CENTER);
         add(spUsers, BorderLayout.EAST);
 
+
+        panelTop.setVisible(true);
+        panelBottom.setVisible(false);
         setVisible(true);
     }
 
@@ -98,8 +102,20 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
             sendMessage();
         } else if (scr == btnLogin) {
             connect();
+        } else if (scr == btnDisconnect) {
+            disconnect();
         } else {
             throw new RuntimeException("Action for component unimplemented");
+        }
+    }
+
+    private void disconnect() {
+        try {
+            socketThread.close();
+            panelTop.setVisible(true);
+            panelBottom.setVisible(false);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
     }
 
@@ -107,6 +123,8 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
         try {
             Socket socket = new Socket(tfIPAddress.getText(), Integer.parseInt(tfPort.getText()));
             socketThread = new SocketThread(this, "Client", socket);
+            panelTop.setVisible(false);
+            panelBottom.setVisible(true);
         } catch (IOException e) {
             showException(Thread.currentThread(), e);
         }
@@ -119,7 +137,7 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
             return;
         }
         tfMessage.setText(null);
-        socketThread.sendMessage(msg);
+        socketThread.sendMessage(userName + ": " + msg);
 //        putLog(String.format("%s: %s", userName, msg));
 //        wrtMsgToLogFile(msg, userName);
 
