@@ -1,5 +1,6 @@
 package chat.client;
 
+import chat.common.Messages;
 import network.SocketThread;
 import network.SocketThreadListener;
 
@@ -13,12 +14,15 @@ import java.net.Socket;
 
 public class Client extends JFrame implements ActionListener, Thread.UncaughtExceptionHandler, SocketThreadListener {
 
-    private static final int WIDTH = 400;
+    private static final int WIDTH = 600;
     private static final int HEIGHT = 300;
 
     private boolean shownIOErrors = false;                                          // для контроля возникновения ошибок
     private final String FILE_NAME = "./chat-client/src/main/java/chat/client/chat.log";       // файл для записи лога чата
     private SocketThread socketThread;
+
+//    private final String tutorIP = "95.84.209.91"           // ip преподавателя
+//    private final String tutorPort = "8189"                 // port преподавателя
 
     private final JTextArea log = new JTextArea();                                     // поле со всеми сообщениями чата
 
@@ -28,7 +32,7 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
     private final JTextField tfPort = new JTextField("80");                              // порт
     private final JCheckBox cbAlwaysOnTop = new JCheckBox("Always on top");         // чекбокс "всегда сверху"
     private final JTextField tfLogin = new JTextField("VKMorgot");                      // логин пользователя
-    private final JPasswordField tfPassword = new JPasswordField("123456");        // пароль пользователя
+    private final JPasswordField tfPassword = new JPasswordField("123");        // пароль пользователя
     private final JButton btnLogin = new JButton("Login");                         // кнопка для подключения
 
     // панель для отправки сообщений и отключения
@@ -79,7 +83,6 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
         add(spUsers, BorderLayout.EAST);
 
 
-        panelTop.setVisible(true);
         panelBottom.setVisible(false);
         setVisible(true);
     }
@@ -103,19 +106,9 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
         } else if (scr == btnLogin) {
             connect();
         } else if (scr == btnDisconnect) {
-            disconnect();
+            socketThread.close();
         } else {
             throw new RuntimeException("Action for component unimplemented");
-        }
-    }
-
-    private void disconnect() {
-        try {
-            socketThread.close();
-            panelTop.setVisible(true);
-            panelBottom.setVisible(false);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
         }
     }
 
@@ -123,8 +116,6 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
         try {
             Socket socket = new Socket(tfIPAddress.getText(), Integer.parseInt(tfPort.getText()));
             socketThread = new SocketThread(this, "Client", socket);
-            panelTop.setVisible(false);
-            panelBottom.setVisible(true);
         } catch (IOException e) {
             showException(Thread.currentThread(), e);
         }
@@ -137,7 +128,7 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
             return;
         }
         tfMessage.setText(null);
-        socketThread.sendMessage(userName + ": " + msg);
+        socketThread.sendMessage(userName + ": " + msg); // отправляет имя пользователя и его сообщение
 //        putLog(String.format("%s: %s", userName, msg));
 //        wrtMsgToLogFile(msg, userName);
 
@@ -181,7 +172,7 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
     @Override
     public void uncaughtException(Thread t, Throwable e) {
         e.printStackTrace();
-        showException(t, e);
+//        showException(t, e);
     }
 
     @Override
@@ -191,12 +182,17 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
 
     @Override
     public void onSocketStop(SocketThread t) {
-        putLog("Stop");
+        panelBottom.setVisible(false);
+        panelTop.setVisible(true);
     }
 
     @Override
     public void onSocketReady(SocketThread t, Socket socket) {
-        putLog("Ready");
+        panelBottom.setVisible(true);
+        panelTop.setVisible(false);
+        String login = tfLogin.getText();
+        String pass = new String(tfPassword.getPassword());
+        t.sendMessage(Messages.getAuthRequest(login, pass));
     }
 
     @Override
