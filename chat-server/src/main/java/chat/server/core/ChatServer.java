@@ -1,5 +1,6 @@
 package chat.server.core;
 
+import chat.common.Messages;
 import network.ServerSocketThread;
 import network.ServerSocketThreadListener;
 import network.SocketThread;
@@ -54,17 +55,20 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
     }
 
     /**
-     * Server socket thread methods
+     * Server socket thread listening
      */
 
     @Override
     public void onServerStart(ServerSocketThread thread) {
         putLog("Server thread started");
+        SqlClient.connect();
     }
 
     @Override
     public void onServerStop(ServerSocketThread thread) {
         putLog("Server thread stopped");
+//        clients.clear();  для очистки подключенных ранее сокетов
+        SqlClient.disconnect();
     }
 
     @Override
@@ -82,7 +86,7 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
         // реакция на соединение
         putLog("Client connected");
         String name = "SocketThread" + client.getInetAddress() + ": " + client.getPort();
-        new SocketThread(this, name, client);
+        new ClientThread(this, name, client);
     }
 
     @Override
@@ -91,7 +95,7 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
     }
 
     /**
-     * Socket thread methods
+     * Socket thread listening
      */
 
     @Override
@@ -113,10 +117,42 @@ public class ChatServer implements ServerSocketThreadListener, SocketThreadListe
 
     @Override
     public void onReceiveString(SocketThread t, Socket s, String msg) {
-//        t.sendMessage("echo: " + msg);
-        for (SocketThread socketThread : clients) {
-            socketThread.sendMessage(msg);
+        ClientThread client = (ClientThread) t;
+        if (client.isAuthorized()) {
+            handleAuthMsg(client, msg);
+        } else {
+            handleNonAuthMsg(client, msg);
         }
+    }
+
+    private void handleAuthMsg(ClientThread client, String msg) {
+        sendToAllAuthorized(msg);
+    }
+
+    private void sendToAllAuthorized(String msg) {
+        for (SocketThread clientThread : clients) {
+            ClientThread client = (ClientThread) clientThread;
+            if (!client.isAuthorized()) continue;
+            client.sendMessage(msg);
+        }
+    }
+
+    private void handleNonAuthMsg(ClientThread client, String msg) {
+        String[] arr = msg.split(Messages.DELIMITER);
+        if (arr.length != 3 || !arr[0].equals(Messages.AUTH_REQUEST)) {
+            client.msgFormatError(msg);
+            return;
+        }
+        String login = arr[1];
+        String password = arr[2];
+        String nickname = SqlClient.getNick(login, password);
+        if (nickname == null) {
+            putLog("Invalid login attempt " + login);
+            client.authFail();
+            return;
+        }
+        client.authAccept(nickname);
+        sendToAllAuthorized(Messages.getTypeBroadcast("Server", nickname + " connected."));
     }
 
     @Override

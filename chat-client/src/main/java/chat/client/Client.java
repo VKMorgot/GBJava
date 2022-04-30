@@ -1,5 +1,6 @@
 package chat.client;
 
+import chat.common.Messages;
 import network.SocketThread;
 import network.SocketThreadListener;
 
@@ -20,6 +21,9 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
     private final String FILE_NAME = "./chat-client/src/main/java/chat/client/chat.log";       // файл для записи лога чата
     private SocketThread socketThread;
 
+//    private final String tutorIP = "95.84.209.91"           // ip преподавателя
+//    private final String tutorPort = "8189"                 // port преподавателя
+
     private final JTextArea log = new JTextArea();                                     // поле со всеми сообщениями чата
 
     // панель для ввода коннекта к серверу: 2 строки, 3 колонки
@@ -28,7 +32,7 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
     private final JTextField tfPort = new JTextField("80");                              // порт
     private final JCheckBox cbAlwaysOnTop = new JCheckBox("Always on top");         // чекбокс "всегда сверху"
     private final JTextField tfLogin = new JTextField("VKMorgot");                      // логин пользователя
-    private final JPasswordField tfPassword = new JPasswordField("123456");        // пароль пользователя
+    private final JPasswordField tfPassword = new JPasswordField("123");        // пароль пользователя
     private final JButton btnLogin = new JButton("Login");                         // кнопка для подключения
 
     // панель для отправки сообщений и отключения
@@ -124,7 +128,7 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
             return;
         }
         tfMessage.setText(null);
-        socketThread.sendMessage(userName + ": " + msg);
+        socketThread.sendMessage(userName + ": " + msg); // отправляет имя пользователя и его сообщение
 //        putLog(String.format("%s: %s", userName, msg));
 //        wrtMsgToLogFile(msg, userName);
 
@@ -168,7 +172,7 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
     @Override
     public void uncaughtException(Thread t, Throwable e) {
         e.printStackTrace();
-        showException(t, e);
+//        showException(t, e);
     }
 
     @Override
@@ -186,6 +190,9 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
     public void onSocketReady(SocketThread t, Socket socket) {
         panelBottom.setVisible(true);
         panelTop.setVisible(false);
+        String login = tfLogin.getText();
+        String pass = new String(tfPassword.getPassword());
+        t.sendMessage(Messages.getAuthRequest(login, pass));
     }
 
     @Override
