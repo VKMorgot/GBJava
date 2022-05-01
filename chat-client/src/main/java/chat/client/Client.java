@@ -11,6 +11,9 @@ import java.awt.event.ActionListener;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.Socket;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
 
 public class Client extends JFrame implements ActionListener, Thread.UncaughtExceptionHandler, SocketThreadListener {
 
@@ -18,8 +21,11 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
     private static final int HEIGHT = 300;
 
     private boolean shownIOErrors = false;                                          // для контроля возникновения ошибок
-    private final String FILE_NAME = "./chat-client/src/main/java/chat/client/chat.log";       // файл для записи лога чата
     private SocketThread socketThread;
+
+    private final String FILE_NAME = "./chat-client/src/main/java/chat/client/chat.log";       // файл для записи лога чата
+    private static final DateFormat DATA_FORMAT = new SimpleDateFormat("HH:mm:ss ");
+    private static final String TITLE = "Chat Client";
 
 //    private final String tutorIP = "95.84.209.91"           // ip преподавателя
 //    private final String tutorPort = "8189"                 // port преподавателя
@@ -39,7 +45,7 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
     private final JPanel panelBottom = new JPanel(new BorderLayout());
     private final JButton btnDisconnect = new JButton("Disconnect");             // кнопка для отключения
     private final JTextField tfMessage = new JTextField();                           // поле для ввода сообщения в чат
-    private final JButton btnSend = new JButton("Send");                        // кнопка отправки сообщения
+    private final JButton btnSend = new JButton("<html><b>Send</b></html>");    // кнопка отправки сообщения
     private final JList<String> userList = new JList<>();                           // список подключенных пользователей
 
     private Client() {
@@ -47,17 +53,13 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null); // посреди экрана
         setSize(WIDTH, HEIGHT);
-        setTitle("Chat Client");
+        setTitle(TITLE);
         log.setEditable(false);      // запрещаем ручное редактирование поля чата
+        log.setLineWrap(true);       // добавляем перенос по строкам
 
-        JScrollPane spLog = new JScrollPane(log);                           // подключаем скролирование списка
-        JScrollPane spUsers = new JScrollPane(userList);                    // подключаем скролирование списка
+        JScrollPane spLog = new JScrollPane(log);             // подключаем скролирование списка
+        JScrollPane spUsers = new JScrollPane(userList);      // подключаем скролирование списка
 
-        String[] users = {"user1", "user2",
-                "user3", "user4", "user5", "user6",
-                "user7", "user8", "user9",
-                "user10_with_a_exceptionally_long_nickname",};
-        userList.setListData(users);
         spUsers.setPreferredSize(new Dimension(100, 0));
 
         // подключаем ActionListener на элементы формы
@@ -120,6 +122,7 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
             showException(Thread.currentThread(), e);
         }
     }
+
     private void sendMessage() {
         String msg = tfMessage.getText();
         String userName = tfLogin.getText();
@@ -128,7 +131,7 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
             return;
         }
         tfMessage.setText(null);
-        socketThread.sendMessage(userName + ": " + msg); // отправляет имя пользователя и его сообщение
+        socketThread.sendMessage(Messages.getTypeBcastFromClient(msg));
 //        putLog(String.format("%s: %s", userName, msg));
 //        wrtMsgToLogFile(msg, userName);
 
@@ -184,6 +187,8 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
     public void onSocketStop(SocketThread t) {
         panelBottom.setVisible(false);
         panelTop.setVisible(true);
+        setTitle(TITLE);
+        userList.setListData(new String[0]);
     }
 
     @Override
@@ -197,7 +202,36 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
 
     @Override
     public void onReceiveString(SocketThread thread, Socket s, String msg) {
-        putLog(msg);
+        handleMessage(msg);
+    }
+
+    void handleMessage(String value) {
+        String[] arr = value.split(Messages.DELIMITER);
+        String msgType = arr[0];
+        switch (msgType) {
+            case Messages.AUTH_ACCEPT:
+                setTitle(TITLE + " logged in as: " + arr[1]);
+                break;
+            case Messages.AUTH_DENY:
+                putLog(value);
+                break;
+            case Messages.MSG_FORMAT_ERROR:
+                putLog(value);
+                break;
+            case Messages.USER_LIST:
+                String users = value.substring(Messages.DELIMITER.length() +
+                        Messages.USER_LIST.length());
+                String[] usersArr = users.split(Messages.DELIMITER);
+                Arrays.sort(usersArr);
+                userList.setListData(usersArr);
+                break;
+            case Messages.MSG_BROADCAST:
+                log.append(DATA_FORMAT.format(Long.parseLong(arr[1])) + ": " + arr[2] + ": " + arr[3] + "\n");
+                log.setCaretPosition(log.getDocument().getLength());
+                break;
+            default:
+                throw new RuntimeException("Unknown message type: " + msgType);
+        }
     }
 
     @Override
