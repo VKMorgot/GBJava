@@ -20,7 +20,8 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
     private static final int WIDTH = 600;
     private static final int HEIGHT = 300;
 
-    private boolean shownIOErrors = false;                                          // для контроля возникновения ошибок
+    private boolean shownIOErrors = false;                      // для контроля возникновения ошибок
+    private boolean showPopupError = true;                      // определяем, нужно ли показывать ошибку в попапе
     private SocketThread socketThread;
 
     private final String FILE_NAME = "./chat-client/src/main/java/chat/client/chat.log";       // файл для записи лога чата
@@ -108,7 +109,9 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
         } else if (scr == btnLogin) {
             connect();
         } else if (scr == btnDisconnect) {
+            showPopupError = false;
             socketThread.close();
+//            showPopupError = true;
         } else {
             throw new RuntimeException("Action for component unimplemented");
         }
@@ -236,6 +239,9 @@ public class Client extends JFrame implements ActionListener, Thread.UncaughtExc
 
     @Override
     public void onSocketException(SocketThread t, Throwable e) {
-        showException(t, e);
+        if (showPopupError)
+            showException(t, e);
+        else
+            showPopupError = true;
     }
 }
